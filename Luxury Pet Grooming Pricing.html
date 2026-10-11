@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Luxury Pet Grooming Salon - Pricing & Estimates</title>
+  <meta name="description" content="View our premium pet grooming services, compare prices, and calculate estimated costs.">
+  <style>
+    /* 
+     * DESIGN SYSTEM: Luxury Monochrome 
+     * Colors: Whites, blacks, charcoals, neutral greys, and functional error red.
+     * Spacing: Base 16px/32px scale.
+     */
+    :root {
+      --color-white: #ffffff;
+      --color-black: #000000;
+      --color-charcoal: #222222;
+      --color-dark-grey: #555555;
+      --color-grey: #e0e0e0;
+      --color-light-grey: #f7f7f7;
+      --color-error: #d32f2f;
+      --color-error-bg: #fdeaea;
+      --color-focus: #000000;
+
+      --space-xs: 4px;
+      --space-sm: 8px;
+      --space-md: 16px;
+      --space-lg: 32px;
+      --space-xl: 64px;
+
+      --radius-sm: 4px;
+      --radius-md: 8px;
+
+      --font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-family);
+      background-color: var(--color-light-grey);
+      color: var(--color-charcoal);
+      line-height: 1.6;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* TYPOGRAPHY */
+    h1, h2, h3, h4 {
+      color: var(--color-black);
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    h1 { font-size: 2.5rem; margin-bottom: var(--space-sm); letter-spacing: -0.02em; }
+    h2 { font-size: 1.5rem; margin-bottom: var(--space-md); }
+    h3 { font-size: 1.125rem; margin-bottom: var(--space-xs); }
+    
+    p { margin-bottom: var(--space-md); }
+    
+    .text-sm { font-size: 0.875rem; color: var(--color-dark-grey); }
+
+    /* LAYOUT */
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 var(--space-md);
+    }
+
+    header {
+      background-color: var(--color-white);
+      padding: var(--space-lg) 0;
+      border-bottom: 1px solid var(--color-grey);
+      text-align: center;
+    }
+
+    .main-content {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-lg);
+      padding: var(--space-lg) 0;
+      flex-grow: 1;
+    }
+
+    @media (min-width: 900px) {
+      .main-content {
+        grid-template-columns: 2fr 1fr;
+      }
+    }
+
+    /* CONTROLS (Search & Filter) */
+    .controls-section {
+      background: var(--color-white);
+      padding: var(--space-md);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-grey);
+      margin-bottom: var(--space-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    .search-wrapper {
+      display: flex;
+      gap: var(--space-sm);
+      position: relative;
+    }
+
+    .search-input {
+      flex-grow: 1;
+      padding: 12px var(--space-md);
+      border: 1px solid var(--color-grey);
+      border-radius: var(--radius-sm);
+      font-size: 1rem;
+      transition: border-color 0.2s;
+    }
+
+    .search-input:focus {
+      outline: 2px solid var(--color-focus);
+      outline-offset: -1px;
+    }
+
+    .category-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+    }
+
+    .filter-btn {
+      background: var(--color-white);
+      border: 1px solid var(--color-black);
+      color: var(--color-black);
+      padding: 6px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.875rem;
+      transition: all 0.2s;
+    }
+
+    .filter-btn:hover, .filter-btn.active {
+      background: var(--color-black);
+      color: var(--color-white);
+    }
+
+    .filter-btn:focus-visible {
+      outline: 2px solid var(--color-focus);
+      outline-offset: 2px;
+    }
+
+    /* SERVICES GRID */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: var(--space-md);
+    }
+
+    .service-card {
+      background: var(--color-white);
+      border: 1px solid var(--color-grey);
+      border-radius: var(--radius-md);
+      padding: var(--space-md);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .service-card:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      transform: translateY(-2px);
+    }
+
+    .service-card.selected {
+      border: 2px solid var(--color-black);
+    }
+
+    .service-meta {
+      display: flex;
+      justify-content: space-between;
+      margin-top: auto;
+      padding-top: var(--space-md);
+      align-items: center;
+    }
+
+    .service-price {
+      font-weight: 600;
+      font-size: 1.125rem;
+      color: var(--color-black);
+    }
+
+    /* BUTTONS */
+    .btn {
+      background: var(--color-black);
+      color: var(--color-white);
+      border: none;
+      padding: 10px var(--space-md);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      text-align: center;
+      transition: opacity 0.2s;
+    }
+
+    .btn:hover { opacity: 0.85; }
+    
+    .btn:disabled {
+      background: var(--color-grey);
+      color: var(--color-dark-grey);
+      cursor: not-allowed;
+    }
+
+    .btn-secondary {
+      background: var(--color-white);
+      color: var(--color-black);
+      border: 1px solid var(--color-black);
+    }
+
+    .btn-secondary:hover { background: var(--color-light-grey); opacity: 1; }
+    
+    .btn-text {
+      background: transparent;
+      color: var(--color-dark-grey);
+      border: none;
+      text-decoration: underline;
+      cursor: pointer;
+      font-size: 0.875rem;
+    }
+    
+    .btn-text:hover { color: var(--color-black); }
+
+    /* ESTIMATOR ASIDE */
+    .estimator-panel {
+      background: var(--color-white);
+      border: 1px solid var(--color-grey);
+      border-radius: var(--radius-md);
+      padding: var(--space-md);
+      position: sticky;
+      top: var(--space-md);
+      height: fit-content;
+    }
+
+    .selected-items-list {
+      list-style: none;
+      margin-bottom: var(--space-md);
+      border-bottom: 1px solid var(--color-grey);
+      padding-bottom: var(--space-md);
+    }
+
+    .selected-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: var(--space-sm);
+      font-size: 0.875rem;
+    }
+
+    .remove-btn {
+      background: none;
+      border: none;
+      color: var(--color-dark-grey);
+      cursor: pointer;
+      font-size: 1rem;
+      line-height: 1;
+      padding: 0 4px;
+    }
+    .remove-btn:hover { color: var(--color-error); }
+
+    .totals {
+      margin-top: var(--space-md);
+      margin-bottom: var(--space-md);
+    }
+
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: var(--space-sm);
+    }
+
+    .total-row.grand-total {
+      font-size: 1.25rem;
+      font-weight: 600;
+      border-top: 2px solid var(--color-black);
+      padding-top: var(--space-sm);
+      margin-top: var(--space-sm);
+    }
+
+    /* FORMS */
+    .form-group {
+      margin-bottom: var(--space-md);
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      font-weight: 600;
+      font-size: 0.875rem;
+      margin-bottom: var(--space-xs);
+    }
+
+    input[type="text"], select {
+      padding: 10px;
+      border: 1px solid var(--color-grey);
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 1rem;
+    }
+
+    input:focus, select:focus {
+      outline: 2px solid var(--color-focus);
+      outline-offset: -1px;
+    }
+
+    /* Validation States */
+    .has-error input, .has-error select {
+      border-color: var(--color-error);
+      background-color: var(--color-error-bg);
+    }
+    .has-error input:focus, .has-error select:focus {
+      outline-color: var(--color-error);
+    }
+
+    .error-msg {
+      color: var(--color-error);
+      font-size: 0.75rem;
+      margin-top: 4px;
+      display: none;
+    }
+    .has-error .error-msg { display: block; }
+
+    /* UTILITIES & STATES */
+    .empty-state {
+      padding: var(--space-xl) var(--space-md);
+      text-align: center;
+      color: var(--color-dark-grey);
+      background: var(--color-white);
+      border: 1px dashed var(--color-grey);
+      border-radius: var(--radius-md);
+    }
+
+    .hidden { display: none !important; }
+
+    .loader {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(0,0,0,0.1);
+      border-radius: 50%;
+      border-top-color: var(--color-black);
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* NOTIFICATIONS */
+    #notification-area {
+      position: fixed;
+      bottom: var(--space-md);
+      right: var(--space-md);
+      max-width: 400px;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+
+    .toast {
+      background: var(--color-white);
+      border: 1px solid var(--color-grey);
+      padding: var(--space-md);
+      border-radius: var(--radius-md);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+      animation: slideIn 0.3s ease-out forwards;
+    }
+
+    .toast.success { border-left: 4px solid var(--color-black); }
+    .toast.error { border-left: 4px solid var(--color-error); }
+
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    footer {
+      background: var(--color-white);
+      text-align: center;
+      padding: var(--space-md);
+      border-top: 1px solid var(--color-grey);
+      margin-top: auto;
+      color: var(--color-dark-grey);
+      font-size: 0.875rem;
+    }
+
+    /* Accessibility - visually hidden but available for screen readers */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border-width: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="container">
+      <h1>Monochrome Luxury Grooming</h1>
+      <p>Premium care for exceptional companions.</p>
+    </div>
+  </header>
+
+  <main class="container main-content">
+    
+    <!-- Left Column: Search, Filter, and Services Grid -->
+    <section aria-label="Services Selection">
+      
+      <div class="controls-section">
+        <div class="search-wrapper">
+          <label for="search-input" class="sr-only">Search Services</label>
+          <input type="search" id="search-input" class="search-input" placeholder="Search services by name or description..." autocomplete="off">
+          <button id="clear-search-btn" class="btn btn-secondary hidden" aria-label="Clear search">Clear</button>
+        </div>
+        
+        <div id="category-filters" class="category-filters" role="group" aria-label="Filter by Category">
+          <!-- Categories injected by JS -->
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #e0e0e0; padding-top: 16px; margin-top: 8px;">
+          <span class="text-sm">Pricing data is simulated locally for offline support.</span>
+          <button id="refresh-data-btn" class="btn btn-secondary text-sm">
+            <span id="refresh-spinner" class="loader hidden"></span> 
+            Refresh Pricing
+          </button>
+        </div>
+      </div>
+
+      <div id="services-grid" class="services-grid" aria-live="polite">
+        <!-- Service cards injected by JS -->
+      </div>
+    </section>
+
+    <!-- Right Column: Estimator -->
+    <aside aria-label="Price Estimator">
+      <div class="estimator-panel">
+        <h2>Service Estimate</h2>
+        
+        <ul id="selected-list" class="selected-items-list" aria-live="polite">
+          <li class="text-sm" style="color: var(--color-dark-grey); font-style: italic;">No services selected.</li>
+        </ul>
+
+        <div class="form-group">
+          <label for="pet-size">Pet Size Adjustment</label>
+          <select id="pet-size">
+            <option value="small">Small (Base Price)</option>
+            <option value="medium">Medium (+25%)</option>
+            <option value="large">Large (+50%)</option>
+          </select>
+          <span class="text-sm" style="margin-top: 4px;">Prices scale based on pet size/coat volume.</span>
+        </div>
+
+        <div class="totals">
+          <div class="total-row text-sm">
+            <span>Subtotal (Base):</span>
+            <span id="subtotal-display">₹0.00</span>
+          </div>
+          <div class="total-row grand-total">
+            <span>Estimated Total:</span>
+            <span id="total-display">₹0.00</span>
+          </div>
+        </div>
+
+        <form id="estimate-form" novalidate>
+          <div class="form-group" id="group-customer-name">
+            <label for="customer-name">Customer Name *</label>
+            <input type="text" id="customer-name" required aria-describedby="error-customer-name">
+            <span class="error-msg" id="error-customer-name">Please provide a valid customer name.</span>
+          </div>
+          
+          <div class="form-group" id="group-pet-name">
+            <label for="pet-name">Pet Name *</label>
+            <input type="text" id="pet-name" required aria-describedby="error-pet-name">
+            <span class="error-msg" id="error-pet-name">Please provide a pet name.</span>
+          </div>
+
+          <div class="form-group" id="group-pet-type">
+            <label for="pet-type">Pet Breed / Type *</label>
+            <input type="text" id="pet-type" placeholder="e.g. Golden Retriever" required aria-describedby="error-pet-type">
+            <span class="error-msg" id="error-pet-type">Please specify the breed or type.</span>
+          </div>
+
+          <div style="display: flex; gap: var(--space-sm); margin-top: var(--space-lg);">
+            <button type="submit" id="submit-btn" class="btn" style="flex: 2;" disabled>Save Estimate</button>
+            <button type="button" id="reset-btn" class="btn btn-secondary" style="flex: 1;">Reset</button>
+          </div>
+        </form>
+
+      </div>
+    </aside>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>Demonstration application. Client-side sanitization in use. Estimates are illustrative and not final charges.</p>
+    </div>
+  </footer>
+
+  <div id="notification-area" aria-live="assertive"></div>
+
+  <script>
+    /**
+     * 1. DATA CONFIGURATION
+     * Local JavaScript data for offline usage.
+     */
+    const sampleData = [
+      { id: 's1', name: 'Basic Bath & Blow Dry', category: 'Bath & Grooming', desc: 'Premium shampoo, conditioning, and professional blow dry.', basePrice: 1500, duration: '1 hr', suitable: 'All' },
+      { id: 's2', name: 'Full Grooming Package', category: 'Packages', desc: 'Bath, blow dry, full haircut, nail trim, and ear cleaning.', basePrice: 3500, duration: '2.5 hrs', suitable: 'All' },
+      { id: 's3', name: 'Breed-Specific Haircut', category: 'Bath & Grooming', desc: 'Styling according to breed standards.', basePrice: 2000, duration: '1.5 hrs', suitable: 'All' },
+      { id: 's4', name: 'Nail Trimming', category: 'Hygiene', desc: 'Safe and stress-free nail clipping and filing.', basePrice: 400, duration: '15 mins', suitable: 'All' },
+      { id: 's5', name: 'Ear Cleaning', category: 'Hygiene', desc: 'Gentle cleaning to prevent infections.', basePrice: 300, duration: '15 mins', suitable: 'All' },
+      { id: 's6', name: 'Teeth Cleaning', category: 'Hygiene', desc: 'Plaque removal and breath freshening.', basePrice: 600, duration: '20 mins', suitable: 'All' },
+      { id: 's7', name: 'De-shedding Treatment', category: 'Treatments', desc: 'Specialized tools to remove undercoat and reduce shedding.', basePrice: 1200, duration: '1 hr', suitable: 'Double-coated' },
+      { id: 's8', name: 'Flea & Tick Treatment', category: 'Treatments', desc: 'Medicated bath to eliminate parasites safely.', basePrice: 1800, duration: '1 hr', suitable: 'All' },
+      { id: 's9', name: 'Luxury Spa Package', category: 'Packages', desc: 'Mud bath, paw balm, aromatherapy, and full grooming.', basePrice: 5000, duration: '3 hrs', suitable: 'All' },
+      { id: 's10', name: 'Puppy Introduction Grooming', category: 'Packages', desc: 'Gentle first-time bath, brush, and positive reinforcement.', basePrice: 1200, duration: '45 mins', suitable: 'Puppies' }
+    ];
+
+    const categories = ['All Services', 'Bath & Grooming', 'Hygiene', 'Treatments', 'Packages'];
+
+    /**
+     * 2. APPLICATION STATE
+     */
+    const state = {
+      services: [...sampleData],
+      selectedIds: new Set(),
+      searchQuery: '',
+      activeCategory: 'All Services',
+      petSize: 'small', // small | medium | large
+      isRefreshing: false
+    };
+
+    const SIZE_MULTIPLIERS = {
+      'small': 1.0,
+      'medium': 1.25,
+      'large': 1.50
+    };
+
+    /**
+     * 3. DOM ELEMENTS
+     */
+    const elements = {
+      searchInput: document.getElementById('search-input'),
+      clearSearchBtn: document.getElementById('clear-search-btn'),
+      categoryContainer: document.getElementById('category-filters'),
+      servicesGrid: document.getElementById('services-grid'),
+      selectedList: document.getElementById('selected-list'),
+      petSizeSelect: document.getElementById('pet-size'),
+      subtotalDisplay: document.getElementById('subtotal-display'),
+      totalDisplay: document.getElementById('total-display'),
+      estimateForm: document.getElementById('estimate-form'),
+      submitBtn: document.getElementById('submit-btn'),
+      resetBtn: document.getElementById('reset-btn'),
+      refreshBtn: document.getElementById('refresh-data-btn'),
+      refreshSpinner: document.getElementById('refresh-spinner'),
+      notificationArea: document.getElementById('notification-area')
+    };
+
+    /**
+     * 4. FORMATTERS & UTILS
+     */
+    const formatINR = (amount) => {
+      if (isNaN(amount) || amount < 0) return '₹0.00';
+      return new Intl.NumberFormat('en-IN', {
+        style: 'currency',
+        currency: 'INR'
+      }).format(amount);
+    };
+
+    // Safe text creation utility to prevent XSS
+    const el = (tag, classNames, textContent) => {
+      const element = document.createElement(tag);
+      if (classNames) element.className = classNames;
+      if (textContent !== undefined) element.textContent = textContent;
+      return element;
+    };
+
+    // Simulate Analytics
+    const logAnalytics = (action) => {
+      console.log(`[Analytics] User interacted with Luxury Pet Grooming Salon Pricing Page - ${action}`);
+    };
+
+    /**
+     * 5. RENDERING LOGIC
+     */
+    
+    // Render Category Buttons
+    const renderCategories = () => {
+      elements.categoryContainer.innerHTML = ''; // Safe to clear via innerHTML
+      categories.forEach(cat => {
+        const btn = el('button', `filter-btn ${state.activeCategory === cat ? 'active' : ''}`, cat);
+        btn.setAttribute('aria-pressed', state.activeCategory === cat);
+        btn.addEventListener('click', () => {
+          state.activeCategory = cat;
+          logAnalytics(`Category changed to ${cat}`);
+          renderCategories(); // update active state
+          renderServices();
+        });
+        elements.categoryContainer.appendChild(btn);
+      });
+    };
+
+    // Render Services Grid
+    const renderServices = () => {
+      elements.servicesGrid.innerHTML = ''; // Safe clear
+      
+      const filtered = state.services.filter(s => {
+        const matchesSearch = s.name.toLowerCase().includes(state.searchQuery.toLowerCase()) || 
+                              s.desc.toLowerCase().includes(state.searchQuery.toLowerCase());
+        const matchesCat = state.activeCategory === 'All Services' || s.category === state.activeCategory;
+        return matchesSearch && matchesCat;
+      });
+
+      if (filtered.length === 0) {
+        const emptyState = el('div', 'empty-state');
+        if (state.services.length === 0) {
+            emptyState.textContent = "Data is currently unavailable.";
+        } else {
+            emptyState.textContent = "No data found. Try a different search.";
+        }
+        elements.servicesGrid.appendChild(emptyState);
+        return;
+      }
+
+      filtered.forEach(service => {
+        const isSelected = state.selectedIds.has(service.id);
+        const card = el('article', `service-card ${isSelected ? 'selected' : ''}`);
+        
+        const header = el('div');
+        header.appendChild(el('h3', '', service.name));
+        header.appendChild(el('p', 'text-sm', service.desc));
+        
+        const metaList = el('ul', 'text-sm');
+        metaList.style.listStyle = 'none';
+        metaList.style.marginBottom = 'var(--space-md)';
+        metaList.style.color = 'var(--color-dark-grey)';
+        metaList.appendChild(el('li', '', `Duration: ~${service.duration}`));
+        metaList.appendChild(el('li', '', `Suitable: ${service.suitable}`));
+        header.appendChild(metaList);
+        
+        const footer = el('div', 'service-meta');
+        footer.appendChild(el('span', 'service-price', formatINR(service.basePrice)));
+        
+        const btn = el('button', `btn ${isSelected ? 'btn-secondary' : ''}`, isSelected ? 'Remove' : 'Select');
+        btn.setAttribute('aria-label', `${isSelected ? 'Remove' : 'Select'} ${service.name}`);
+        btn.addEventListener('click', () => toggleService(service.id));
+        
+        footer.appendChild(btn);
+        
+        card.appendChild(header);
+        card.appendChild(footer);
+        elements.servicesGrid.appendChild(card);
+      });
+    };
+
+    // Render Estimator Sidebar
+    const renderEstimator = () => {
+      elements.selectedList.innerHTML = '';
+      
+      if (state.selectedIds.size === 0) {
+        const li = el('li', 'text-sm');
+        li.style.color = 'var(--color-dark-grey)';
+        li.style.fontStyle = 'italic';
+        li.textContent = 'No services selected.';
+        elements.selectedList.appendChild(li);
+        elements.subtotalDisplay.textContent = formatINR(0);
+        elements.totalDisplay.textContent = formatINR(0);
+        elements.submitBtn.disabled = true;
+        return;
+      }
+
+      elements.submitBtn.disabled = false;
+      let subtotal = 0;
+
+      const selectedServices = Array.from(state.selectedIds)
+        .map(id => state.services.find(s => s.id === id))
+        .filter(Boolean); // filter out undefined if data changed
+
+      selectedServices.forEach(service => {
+        subtotal += service.basePrice;
+        
+        const li = el('li', 'selected-item');
+        const infoDiv = el('div');
+        infoDiv.appendChild(el('div', '', service.name));
+        
+        // Show base price
+        const priceSpan = el('div', 'text-sm');
+        priceSpan.style.color = 'var(--color-dark-grey)';
+        priceSpan.textContent = formatINR(service.basePrice);
+        infoDiv.appendChild(priceSpan);
+        
+        const removeBtn = el('button', 'remove-btn', '×');
+        removeBtn.setAttribute('aria-label', `Remove ${service.name}`);
+        removeBtn.addEventListener('click', () => toggleService(service.id));
+        
+        li.appendChild(infoDiv);
+        li.appendChild(removeBtn);
+        elements.selectedList.appendChild(li);
+      });
+
+      const multiplier = SIZE_MULTIPLIERS[state.petSize] || 1.0;
+      const estimatedTotal = subtotal * multiplier;
+
+      elements.subtotalDisplay.textContent = formatINR(subtotal);
+      elements.totalDisplay.textContent = formatINR(estimatedTotal);
+    };
+
+    /**
+     * 6. EVENT HANDLERS & ACTIONS
+     */
+
+    const toggleService = (id) => {
+      if (state.selectedIds.has(id)) {
+        state.selectedIds.delete(id);
+        logAnalytics('Service unselected');
+      } else {
+        state.selectedIds.add(id);
+        logAnalytics('Service selected');
+      }
+      renderServices(); // Update card borders/buttons
+      renderEstimator();
+    };
+
+    const handleSearch = (e) => {
+      state.searchQuery = e.target.value.trim();
+      
+      if (state.searchQuery.length > 0) {
+        elements.clearSearchBtn.classList.remove('hidden');
+      } else {
+        elements.clearSearchBtn.classList.add('hidden');
+      }
+      
+      renderServices();
+    };
+
+    const clearSearch = () => {
+      elements.searchInput.value = '';
+      state.searchQuery = '';
+      elements.clearSearchBtn.classList.add('hidden');
+      elements.searchInput.focus();
+      logAnalytics('Search cleared');
+      renderServices();
+    };
+
+    const handleSizeChange = (e) => {
+      state.petSize = e.target.value;
+      logAnalytics(`Pet size changed to ${state.petSize}`);
+      renderEstimator();
+    };
+
+    // Toast Notification System
+    const showNotification = (message, type = 'success') => {
+      const toast = el('div', `toast ${type}`);
+      
+      const title = el('h4', '', type === 'success' ? 'Success' : 'Notice');
+      const msg = el('p', 'text-sm', message);
+      msg.style.marginBottom = '0';
+      
+      toast.appendChild(title);
+      toast.appendChild(msg);
+      
+      elements.notificationArea.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(100%)';
+        toast.style.transition = 'all 0.3s ease';
+        setTimeout(() => {
+          if(toast.parentElement) toast.parentElement.removeChild(toast);
+        }, 300);
+      }, 5000);
+    };
+
+    // Simulated Async Refresh Data
+    const simulateRefresh = async () => {
+      if (state.isRefreshing) return;
+      
+      state.isRefreshing = true;
+      elements.refreshBtn.disabled = true;
+      elements.refreshSpinner.classList.remove('hidden');
+      logAnalytics('Pricing refresh attempted');
+
+      // Simulate network delay
+      await new Promise(resolve => setTimeout(resolve, 1200));
+
+      // Simulate random failure (20% chance)
+      const isSuccess = Math.random() > 0.2;
+
+      state.isRefreshing = false;
+      elements.refreshBtn.disabled = false;
+      elements.refreshSpinner.classList.add('hidden');
+
+      if (isSuccess) {
+        // Just keeping local data intact simulates success in offline mode
+        showNotification('Pricing data synchronized successfully.', 'success');
+        logAnalytics('Pricing refresh succeeded');
+      } else {
+        showNotification('Network simulated failure. Retained local offline data.', 'error');
+        logAnalytics('Pricing refresh failed');
+      }
+    };
+
+    // Form Validation & Sanitization
+    const sanitize = (str) => {
+      if (!str) return '';
+      // Remove basic risky characters, keep it simple for frontend demo
+      return String(str).replace(/[<>]/g, '').trim();
+    };
+
+    const validateField = (inputEl, groupEl) => {
+      const val = sanitize(inputEl.value);
+      if (!val) {
+        groupEl.classList.add('has-error');
+        return false;
+      }
+      groupEl.classList.remove('has-error');
+      return true;
+    };
+
+    const handleFormSubmit = (e) => {
+      e.preventDefault();
+      
+      const cNameEl = document.getElementById('customer-name');
+      const pNameEl = document.getElementById('pet-name');
+      const pTypeEl = document.getElementById('pet-type');
+      
+      const v1 = validateField(cNameEl, document.getElementById('group-customer-name'));
+      const v2 = validateField(pNameEl, document.getElementById('group-pet-name'));
+      const v3 = validateField(pTypeEl, document.getElementById('group-pet-type'));
+
+      if (!v1 || !v2 || !v3) {
+        // Focus first errored input for accessibility
+        if (!v1) cNameEl.focus();
+        else if (!v2) pNameEl.focus();
+        else pTypeEl.focus();
+        return;
+      }
+
+      if (state.selectedIds.size === 0) {
+        showNotification('Please select at least one service.', 'error');
+        return;
+      }
+
+      // Generate local reference
+      const ref = 'EST-' + Math.floor(100000 + Math.random() * 900000);
+      const sName = sanitize(cNameEl.value);
+      
+      showNotification(`Estimate ${ref} generated for ${sName}. (Local save only)`, 'success');
+      logAnalytics('Estimate submitted');
+      
+      handleReset();
+    };
+
+    const handleReset = () => {
+      elements.estimateForm.reset();
+      document.querySelectorAll('.has-error').forEach(el => el.classList.remove('has-error'));
+      state.selectedIds.clear();
+      state.petSize = 'small';
+      elements.petSizeSelect.value = 'small';
+      state.searchQuery = '';
+      elements.searchInput.value = '';
+      elements.clearSearchBtn.classList.add('hidden');
+      state.activeCategory = 'All Services';
+      
+      logAnalytics('Estimate reset');
+      
+      renderCategories();
+      renderServices();
+      renderEstimator();
+    };
+
+    /**
+     * 7. INITIALIZATION
+     */
+    const init = () => {
+      // Event Listeners
+      elements.searchInput.addEventListener('input', handleSearch);
+      elements.clearSearchBtn.addEventListener('click', clearSearch);
+      elements.petSizeSelect.addEventListener('change', handleSizeChange);
+      elements.estimateForm.addEventListener('submit', handleFormSubmit);
+      elements.resetBtn.addEventListener('click', handleReset);
+      elements.refreshBtn.addEventListener('click', simulateRefresh);
+
+      // Remove error state on input
+      ['customer-name', 'pet-name', 'pet-type'].forEach(id => {
+        const el = document.getElementById(id);
+        el.addEventListener('input', () => {
+          document.getElementById(`group-${id}`).classList.remove('has-error');
+        });
+      });
+
+      renderCategories();
+      renderServices();
+      renderEstimator();
+      
+      logAnalytics('Application initialized');
+    };
+
+    // Boot app
+    document.addEventListener('DOMContentLoaded', init);
+
+  </script>
+</body>
+</html>
+```
+
+### 🚀 Architecture & Technical Summary
+
+This single-file solution implements a complete frontend client application without any dependencies.
+
+1.  **Architecture:** The app follows a functional state-driven pattern. A central `state` object acts as the single source of truth. Any user action updates this state, which then calls pure rendering functions (`renderServices`, `renderEstimator`) to sync the UI safely. 
+2.  **DOM Security:** To guarantee immunity from Cross-Site Scripting (XSS), user input and simulated data are strictly injected into the document using vanilla JS element creation (`document.createElement`) and safe text assignment (`textContent`). `innerHTML` is thoroughly avoided when rendering dynamic data.
+3.  **Data & Networking Simulation:** Pricing data is bundled directly as a structured local array to guarantee offline availability. An asynchronous timeout simulates network operations (with forced intermittent failures) to demonstrate defensive UI design, loading states, and error recovery.
+
+---
+
+### 📝 Instructions to Run
+
+1.  Copy the code block above entirely.
+2.  Paste it into your text editor (VS Code, Notepad, TextEdit, etc.).
+3.  Save the file as `index.html`.
+4.  Double-click the file to open it directly in Google Chrome, Firefox, Safari, or Edge. **No internet connection or build tools are required.**
+
+---
+
+### ✅ Manual Test Checklist
+
+Use this to verify the application's reliability:
+
+**Happy Path (Expected Use)**
+- [ ] Cards display service names, descriptions, and correctly formatted INR prices.
+- [ ] Typing in the search bar immediately filters the grid.
+- [ ] Clicking category buttons further refines the grid results.
+- [ ] Clicking "Select" highlights the card, changes the button to "Remove", and updates the sidebar.
+- [ ] Changing the Pet Size dropdown immediately recalculates the Estimated Total (Base * Multiplier).
+- [ ] Entering valid text into the form and clicking "Save Estimate" clears the form and shows a green success toast with a reference number.
+- [ ] Clicking "Refresh Pricing" shows a spinner and eventually completes.
+
+**Unhappy Path (Edge Cases)**
+- [ ] Searching for gibberish (e.g., "zzzz") displays the exact text: *"No data found. Try a different search."*
+- [ ] Submitting the form with empty required fields outlines the missing fields in red and prevents submission.
+- [ ] Simulated Refresh has a built-in 20% failure chance. Click it repeatedly over time to verify the red error toast appears, but the pricing data *remains functional and intact* on the screen.
+
+**Accessibility & Security**
+- [ ] Use `Tab` to navigate the interface. Ensure interactive elements (inputs, buttons) have a visible focus outline.
+- [ ] Note the use of `<section aria-live="polite">` which will announce grid changes to screen readers.
+- [ ] The browser developer console will display simulated `[Analytics]` logging when you interact with the page, proving data isolation (no external pinging).
+- [ ] Open the developer console and execute `document.getElementById('customer-name').value = "<script>alert('hack')</script>";`. Submit the form. Notice the script is safely rendered as plain text in the success notification or stripped via client sanitization, rather than executing.
+
+---
+
+### 🌐 Next Steps for Publishing
+
+If you need to share this with a manager or client, it is ready for immediate static deployment:
+
+1.  **GitHub:** Create a new repository on GitHub. Upload this `index.html` file to the root of the repository.
+2.  **GitHub Pages:** Go to your repository settings > Pages > select the `main` branch > Save. Your page will be live in minutes. 
+3.  **Vercel / Netlify:** Alternatively, drag and drop the folder containing `index.html` directly into the Netlify Drop dashboard or Vercel import page for an instant live URL.
